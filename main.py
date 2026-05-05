@@ -20,9 +20,6 @@ if uploaded_file is not None:
 
     if st.sidebar.button('Analyze'):
         st.title('TOP STATISTICS')
-
-
-
         num_messages,num_words,num_media,num_links=helper.fetch_stats(selected_user,df)
         col1, col2, col3, col4= st.columns(4)
 
@@ -38,6 +35,7 @@ if uploaded_file is not None:
         with col4:
             st.header('Total links shared')
             st.title(num_links)
+
 #monthly message analysis
         st.header('Monthly Messages Analysis')
         timeline = helper.timeline_maker(selected_user, df)
@@ -65,6 +63,7 @@ if uploaded_file is not None:
             ax.bar(month_df['month'],month_df['count'])
             plt.xticks(rotation='vertical')
             st.pyplot(fig)
+
     #daily timeline
         st.header('Daily Message Analysis')
         daily_timeline=helper.daily_analysis(selected_user,df)
@@ -72,6 +71,7 @@ if uploaded_file is not None:
         ax.plot(daily_timeline['only_date'],daily_timeline['messages'],color='pink')
         plt.xticks(rotation='vertical')
         st.pyplot(fig)
+
     #find the busiest users in the group
         if selected_user == 'Overall':
             st.title('Most Busy Users')
@@ -79,20 +79,21 @@ if uploaded_file is not None:
             fig,ax=plt.subplots()
             col1,col2=st.columns(2)
             with col1:
-
                 ax.bar(name, count,color='teal')
                 plt.xticks(rotation='vertical')
                 st.pyplot(fig)
             with col2:
                 st.dataframe(new_df)
+
         #busy time of the day
         st.title('Busiest Time Of The Day')
         heat=helper.heatmap_time(selected_user,df)
         fig,ax2=plt.subplots()
         ax2=sns.heatmap(heat)
-        st.pyplot(fig)
         plt.yticks(rotation='horizontal')
+        st.pyplot(fig)
         plt.show()
+
         #wordcloud
         st.title('WordCloud')
         fig,ax=plt.subplots()
@@ -110,12 +111,11 @@ if uploaded_file is not None:
 
         #most emojis used
         emojis_df=helper.emoji_extractor(selected_user, df)
-
         st.title('Emoji Analysis')
         col1,col2=st.columns(2)
         with col1:
             st.dataframe(emojis_df)
         with col2:
             fig,ax=plt.subplots()
-            ax.pie(emojis_df[1],labels=emojis_df[0],startangle=90,autopct='%1.2f%%')
+            ax.pie(emojis_df['Count'],labels=emojis_df['Emoji'],startangle=90,autopct='%1.2f%%')
             st.pyplot(fig)

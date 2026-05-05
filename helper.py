@@ -22,13 +22,12 @@ def fetch_stats(user_name,df):
     #num of total media messages
     num_media=df[df['messages']=='<Media omitted>'].shape[0]
     #total number of links shared
-
-
     links = []
     for message in df['messages']:
         links.extend(geturl.find_urls(message))
     num_links=len(links)
     return num_messages, len(words),num_media,num_links
+
 def fetch_most_busy(df):
     x=df['users'].value_counts().head()
     name=x.index
@@ -77,8 +76,9 @@ def emoji_extractor(selected_user,df):
     for message in df['messages']:
         found=([c for c in message if c in emoji.EMOJI_DATA])
         emojis.extend(found)
-    emoji_df=pd.DataFrame(Counter(emojis).most_common(5))
+    emoji_df=pd.DataFrame(Counter(emojis).most_common(5),columns=['Emoji','Count'])
     return emoji_df
+
 def timeline_maker(selected_user,df):
     if selected_user !='Overall':
         df = df[df['users'] == selected_user]
@@ -96,17 +96,20 @@ def daily_analysis(selected_user,df):
     df['only_date']=df['date'].dt.date
     daily_df=df.groupby(['only_date']).count()['messages'].reset_index()
     return daily_df
+
 def day_analysis(selected_user,df):
     if selected_user !='Overall':
         df = df[df['users'] == selected_user]
     df['day_name']=df['date'].dt.day_name()
     day_df=df.groupby(['day_name']).count()['messages'].reset_index()
     return day_df
+
 def month_analysis(selected_user,df):
     if selected_user !='Overall':
         df = df[df['users'] == selected_user]
     month_df=df['month'].value_counts().reset_index()
     return month_df
+
 def heatmap_time(selected_user,df):
     if selected_user !='Overall':
         df = df[df['users'] == selected_user]
